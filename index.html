@@ -7,15 +7,15 @@
 <style>
 body{
 background:#0b2c4d;
-font-family:Arial;
 margin:0;
+font-family:Arial;
 color:white;
-text-align:center;
 }
 
 .header{
 background:black;
 padding:15px;
+text-align:center;
 font-size:22px;
 font-weight:bold;
 }
@@ -23,42 +23,72 @@ font-weight:bold;
 .balance{
 background:#003366;
 padding:10px;
+text-align:center;
 font-size:18px;
 }
 
 .container{
+max-width:650px;
+margin:15px auto;
 background:#111;
-margin:15px;
 padding:20px;
 border-radius:20px;
-box-shadow:0 0 20px cyan;
+box-shadow:0 0 25px #00ffff;
+}
+
+.section{
+margin-top:20px;
+}
+
+.bet-row{
+display:flex;
+flex-wrap:wrap;
+justify-content:space-between;
 }
 
 .bet-row button{
-background:linear-gradient(90deg,#1f6fa5,#0d3c66);
-color:white;
-padding:12px;
+flex:1 1 45%;
 margin:5px;
+padding:14px;
+background:linear-gradient(90deg,#1f6fa5,#0d3c66);
 border:none;
-border-radius:10px;
+border-radius:12px;
+color:white;
 font-weight:bold;
-cursor:pointer;
 }
 
-.playbtn{
-background:lime;
-color:black;
-padding:12px 25px;
-border:none;
-border-radius:10px;
-font-weight:bold;
-cursor:pointer;
-margin-top:10px;
+.cards-area{
+display:flex;
+justify-content:space-around;
+margin-top:25px;
 }
 
 .card{
-width:120px;
-margin:10px;
+width:150px;
+border-radius:10px;
+box-shadow:0 0 20px #00ffff;
+background:white;
+}
+
+input{
+display:block;
+margin:20px auto;
+padding:10px;
+width:160px;
+border-radius:8px;
+border:none;
+text-align:center;
+}
+
+.playbtn{
+display:block;
+margin:10px auto;
+padding:14px 25px;
+background:lime;
+border:none;
+border-radius:10px;
+font-weight:bold;
+color:black;
 }
 
 .history span{
@@ -66,19 +96,18 @@ padding:6px 10px;
 border-radius:50%;
 margin:3px;
 display:inline-block;
-font-size:14px;
+font-weight:bold;
 }
 
 .D{background:orange;}
 .T{background:yellow;color:black;}
 .S{background:green;}
 
-input{
-padding:10px;
-border-radius:8px;
-border:none;
-width:150px;
+.result{
 text-align:center;
+margin-top:15px;
+font-size:18px;
+font-weight:bold;
 }
 </style>
 </head>
@@ -90,45 +119,56 @@ text-align:center;
 
 <div class="container">
 
-<!-- TOP BET ROW -->
+<!-- TOP ROW -->
+<div class="section">
 <div class="bet-row">
 <button onclick="selectBet('dragon')">Dragon 2x</button>
 <button onclick="selectBet('suited')">Suited Tie 50x</button>
 <button onclick="selectBet('tiger')">Tiger 2x</button>
 <button onclick="selectBet('pair')">Pair 12x</button>
 </div>
+</div>
 
 <!-- DRAGON SECTION -->
-<h2>DRAGON</h2>
+<div class="section">
+<h3>DRAGON</h3>
 <div class="bet-row">
 <button onclick="selectBet('dragon_even')">Even 2.1</button>
 <button onclick="selectBet('dragon_odd')">Odd 1.79</button>
+<button onclick="selectBet('dragon_red')">Red 1.95</button>
+<button onclick="selectBet('dragon_black')">Black 1.95</button>
 </div>
-<div class="bet-row">
-<button onclick="selectBet('red')">♥ ♦ 1.95</button>
-<button onclick="selectBet('black')">♠ ♣ 1.95</button>
 </div>
 
 <!-- TIGER SECTION -->
-<h2>TIGER</h2>
+<div class="section">
+<h3>TIGER</h3>
 <div class="bet-row">
 <button onclick="selectBet('tiger_even')">Even 2.1</button>
 <button onclick="selectBet('tiger_odd')">Odd 1.79</button>
+<button onclick="selectBet('tiger_red')">Red 1.95</button>
+<button onclick="selectBet('tiger_black')">Black 1.95</button>
+</div>
 </div>
 
-<!-- CARD DISPLAY -->
-<h2>CARDS</h2>
+<!-- CARDS -->
+<div class="cards-area">
+<div>
+<h3>DRAGON</h3>
 <img id="dragonCard" class="card">
-<img id="tigerCard" class="card">
+</div>
 
-<br><br>
+<div>
+<h3>TIGER</h3>
+<img id="tigerCard" class="card">
+</div>
+</div>
 
 <input type="number" id="betAmount" value="10">
 
-<br>
 <button class="playbtn" onclick="play()">PLAY</button>
 
-<h3 id="result"></h3>
+<div class="result" id="result"></div>
 
 <h3>Last Results</h3>
 <div class="history" id="history"></div>
@@ -139,19 +179,16 @@ text-align:center;
 
 let balance=1000;
 let selected="";
-let historyData="";
-
 const suits=["hearts","diamonds","clubs","spades"];
 const values=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
 function randomCard(){
 let suit=suits[Math.floor(Math.random()*4)];
 let value=values[Math.floor(Math.random()*13)];
-
 return{
 value:values.indexOf(value)+1,
 suit:suit,
-image:"https://raw.githubusercontent.com/hayeah/playing-cards-assets/master/png/"+value+"_of_"+suit+".png"
+image:"https://deckofcardsapi.com/static/img/"+value+suit[0].toUpperCase()+".png"
 };
 }
 
@@ -163,6 +200,7 @@ function play(){
 
 let bet=parseInt(document.getElementById("betAmount").value);
 if(bet>balance){alert("Low balance");return;}
+if(!selected){alert("Select Bet First");return;}
 
 balance-=bet;
 
@@ -174,48 +212,4 @@ document.getElementById("tigerCard").src=tiger.image;
 
 let winner="";
 if(dragon.value>tiger.value) winner="dragon";
-else if(tiger.value>dragon.value) winner="tiger";
-else winner="tie";
-
-let win=0;
-
-if(selected=="dragon" && winner=="dragon") win=bet*2;
-if(selected=="tiger" && winner=="tiger") win=bet*2;
-if(selected=="tie" && winner=="tie") win=bet*8;
-
-if(selected=="pair" && dragon.value==tiger.value) win=bet*12;
-
-if(selected=="suited" && dragon.value==tiger.value && dragon.suit==tiger.suit) win=bet*50;
-
-if(selected=="dragon_even" && dragon.value%2==0) win=Math.floor(bet*2.1);
-if(selected=="dragon_odd" && dragon.value%2!=0) win=Math.floor(bet*1.79);
-
-if(selected=="tiger_even" && tiger.value%2==0) win=Math.floor(bet*2.1);
-if(selected=="tiger_odd" && tiger.value%2!=0) win=Math.floor(bet*1.79);
-
-if(selected=="red" && (dragon.suit=="hearts"||dragon.suit=="diamonds")) win=Math.floor(bet*1.95);
-if(selected=="black" && (dragon.suit=="spades"||dragon.suit=="clubs")) win=Math.floor(bet*1.95);
-
-if(win>0){
-balance+=win;
-document.getElementById("result").innerHTML="✅ You Win ₹"+win;
-}else{
-document.getElementById("result").innerHTML="❌ You Lose! Winner: "+winner.toUpperCase();
-}
-
-updateHistory(winner);
-
-document.getElementById("balance").innerText=balance;
-}
-
-function updateHistory(w){
-let h=document.createElement("span");
-h.className=w.charAt(0).toUpperCase();
-h.innerText=w.charAt(0).toUpperCase();
-document.getElementById("history").prepend(h);
-}
-
-</script>
-
-</body>
-</html>
+else if(tiger.value>dragon.value)

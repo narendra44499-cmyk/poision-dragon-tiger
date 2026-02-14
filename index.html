@@ -2,12 +2,17 @@
 <html>
 <head>
 <title>Poision Dragon Tiger</title>
+
 <style>
 body {
     background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
     color: white;
     text-align: center;
     font-family: Arial;
+}
+
+h1 {
+    margin-top: 20px;
 }
 
 .game-box {
@@ -36,6 +41,8 @@ button {
 input {
     padding: 8px;
     font-size: 16px;
+    border-radius: 6px;
+    border: none;
 }
 </style>
 </head>
@@ -57,14 +64,17 @@ input {
 <br><br>
 
 <div class="game-box">
+
 <h2>DRAGON</h2>
 <img id="dragonCard" class="card">
 
 <h2>TIGER</h2>
 <img id="tigerCard" class="card">
+
 </div>
 
 <br>
+
 <button onclick="playGame()">Play Game</button>
 
 <h2 id="result"></h2>
@@ -124,4 +134,25 @@ function playGame(){
     let winner = "";
 
     if(dragonValue > tigerValue) winner = "Dragon";
-    else if(tigerValue >
+    else if(tigerValue > dragonValue) winner = "Tiger";
+    else winner = "Tie";
+
+    if(selectedBet == winner){
+        if(winner == "Tie"){
+            balance += bet * 49;
+        }else{
+            balance += bet;
+        }
+        document.getElementById("result").innerText = "You Win! Winner: " + winner;
+    }else{
+        balance -= bet;
+        document.getElementById("result").innerText = "You Lose! Winner: " + winner;
+    }
+
+    document.getElementById("balance").innerText = balance;
+}
+
+</script>
+
+</body>
+</html>

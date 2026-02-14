@@ -5,92 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(to bottom,#000428,#004e92);
-color:white;
-text-align:center;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #000428, #004e92);
+  text-align: center;
+  color: white;
 }
 
-.header{
-background:#111;
-padding:12px;
-font-size:22px;
-font-weight:bold;
+.header {
+  background: black;
+  padding: 15px;
+  font-size: 22px;
+  font-weight: bold;
 }
 
-.balance{
-margin:10px;
-font-size:18px;
+.balance {
+  background: #002366;
+  padding: 10px;
+  font-size: 18px;
 }
 
-.game-box{
-background:#111;
-margin:15px;
-padding:15px;
-border-radius:15px;
-box-shadow:0 0 20px cyan;
+.game-box {
+  margin: 20px;
+  padding: 20px;
+  background: #111;
+  border-radius: 15px;
+  box-shadow: 0 0 20px cyan;
 }
 
-.card{
-width:100px;
-margin:10px;
+h2 {
+  font-size: 28px;
+  margin: 20px 0;
 }
 
-button{
-padding:10px 18px;
-margin:5px;
-font-size:15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
+input {
+  padding: 10px;
+  width: 70%;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  margin-bottom: 15px;
 }
 
-.dragon{background:red;color:white;}
-.tiger{background:orange;color:black;}
-.tie{background:purple;color:white;}
-.play{background:lime;color:black;}
-
-input{
-padding:8px;
-border-radius:6px;
-border:none;
-margin-top:5px;
+button {
+  padding: 12px 18px;
+  margin: 5px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.history{
-margin-top:10px;
-font-size:16px;
+.dragon { background: red; color: white; }
+.tiger { background: orange; color: black; }
+.tie { background: purple; color: white; }
+
+.play-btn {
+  background: lime;
+  color: black;
+  width: 80%;
+  margin-top: 10px;
 }
 
-.admin{
-display:none;
-background:#222;
-padding:10px;
-margin:10px;
-border-radius:10px;
+.results {
+  margin-top: 20px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">🐉 LIVE DRAGON TIGER 🐅</div>
+<div class="header">
+🐉 LIVE DRAGON TIGER 🐯
+</div>
 
-<div class="balance">Balance: ₹<span id="balance">1000</span></div>
+<div class="balance">
+Balance: ₹<span id="balance">1000</span>
+</div>
 
-<!-- GAME SECTION -->
 <div class="game-box">
 
 <h2>DRAGON</h2>
-<img id="dragonCard" class="card">
-
 <h2>TIGER</h2>
-<img id="tigerCard" class="card">
-
-<br>
 
 <input type="number" id="betAmount" placeholder="Enter Bet Amount">
 
@@ -102,90 +100,57 @@ border-radius:10px;
 
 <br>
 
-<button class="play" onclick="playGame()">Play Game</button>
+<button class="play-btn" onclick="playGame()">Play Game</button>
 
-<h3 id="result"></h3>
-
-<div class="history">
-Last Results: <span id="historyList"></span>
+<div class="results">
+<h3>Last Results:</h3>
+<p id="resultText"></p>
 </div>
 
-</div>
-
-<!-- ADMIN PANEL -->
-<div class="admin" id="adminPanel">
-<h3>Admin Panel</h3>
-<input type="number" id="adminBalance" placeholder="Set Balance">
-<button onclick="setBalance()">Update Balance</button>
 </div>
 
 <script>
-let balance=1000;
-let selectedBet="";
-let history=[];
+let balance = 1000;
+let selectedBet = "";
 
-const cards=["AS","2S","3S","4S","5S","6S","7S","8S","9S","10S","JS","QS","KS",
-"AD","2D","3D","4D","5D","6D","7D","8D","9D","10D","JD","QD","KD",
-"AH","2H","3H","4H","5H","6H","7H","8H","9H","10H","JH","QH","KH",
-"AC","2C","3C","4C","5C","6C","7C","8C","9C","10C","JC","QC","KC"];
-
-const values={"A":14,"K":13,"Q":12,"J":11,
-"10":10,"9":9,"8":8,"7":7,"6":6,
-"5":5,"4":4,"3":3,"2":2};
-
-function selectBet(type){
-selectedBet=type;
+function selectBet(type) {
+  selectedBet = type;
+  alert(type + " selected");
 }
 
-function playGame(){
-let bet=parseInt(document.getElementById("betAmount").value);
-if(!bet||bet<=0)return alert("Enter valid bet");
-if(bet>balance)return alert("Not enough balance");
-if(selectedBet=="")return alert("Select bet");
+function playGame() {
+  let bet = parseInt(document.getElementById("betAmount").value);
 
-let dragon=cards[Math.floor(Math.random()*cards.length)];
-let tiger=cards[Math.floor(Math.random()*cards.length)];
+  if (!selectedBet) {
+    alert("Select Dragon, Tiger or Tie");
+    return;
+  }
 
-document.getElementById("dragonCard").src="https://deckofcardsapi.com/static/img/"+dragon+".png";
-document.getElementById("tigerCard").src="https://deckofcardsapi.com/static/img/"+tiger+".png";
+  if (!bet || bet <= 0) {
+    alert("Enter valid bet amount");
+    return;
+  }
 
-let dragonValue=values[dragon.replace(/[SHDC]/g,"")];
-let tigerValue=values[tiger.replace(/[SHDC]/g,"")];
+  if (bet > balance) {
+    alert("Insufficient Balance");
+    return;
+  }
 
-let winner="";
-if(dragonValue>tigerValue)winner="Dragon";
-else if(tigerValue>dragonValue)winner="Tiger";
-else winner="Tie";
+  let options = ["Dragon", "Tiger", "Tie"];
+  let result = options[Math.floor(Math.random() * options.length)];
 
-if(selectedBet==winner){
-if(winner=="Tie") balance+=bet*8;
-else balance+=bet*2;
-document.getElementById("result").innerText="🎉 You Win! "+winner;
-}else{
-balance-=bet;
-document.getElementById("result").innerText="❌ You Lose! Winner: "+winner;
+  if (result === selectedBet) {
+    balance += bet;
+    document.getElementById("resultText").innerHTML =
+      "Result: " + result + " - You Won ₹" + bet;
+  } else {
+    balance -= bet;
+    document.getElementById("resultText").innerHTML =
+      "Result: " + result + " - You Lost ₹" + bet;
+  }
+
+  document.getElementById("balance").innerText = balance;
 }
-
-history.unshift(winner[0]);
-if(history.length>10)history.pop();
-document.getElementById("historyList").innerText=history.join(" ");
-
-document.getElementById("balance").innerText=balance;
-}
-
-function setBalance(){
-let newBal=parseInt(document.getElementById("adminBalance").value);
-if(newBal>=0){
-balance=newBal;
-document.getElementById("balance").innerText=balance;
-}
-}
-
-document.addEventListener("keydown",function(e){
-if(e.key=="a"){
-document.getElementById("adminPanel").style.display="block";
-}
-});
 </script>
 
 </body>

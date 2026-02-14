@@ -1,1 +1,127 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dragon Tiger - Poision</title>
+<style>
+body{
+  background:#111;
+  color:white;
+  text-align:center;
+  font-family:Arial;
+}
+button{
+  padding:10px 20px;
+  margin:5px;
+  font-size:16px;
+  cursor:pointer;
+}
+.card{
+  font-size:40px;
+  margin:10px;
+}
+.balance{
+  font-size:20px;
+  margin:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Dragon Tiger</h1>
+
+<div class="balance">
+Balance: ₹<span id="balance">1000</span>
+</div>
+
+<h2>Select Bet</h2>
+
+<button onclick="setBet('dragon')">Dragon (1:1)</button>
+<button onclick="setBet('tiger')">Tiger (1:1)</button>
+<button onclick="setBet('tie')">Tie (49:1)</button>
+
+<br><br>
+
+<input type="number" id="betAmount" placeholder="Enter Bet Amount">
+
+<br><br>
+
+<button onclick="play()">Play Game</button>
+
+<h2 id="result">Result will show here</h2>
+
+<div class="card">
+Dragon: <span id="dragonCard">?</span>
+</div>
+
+<div class="card">
+Tiger: <span id="tigerCard">?</span>
+</div>
+
+<script>
+
+let balance = 1000;
+let selectedBet = "";
+
+function setBet(type){
+  selectedBet = type;
+  alert("Bet Selected: " + type);
+}
+
+function play(){
+
+  let bet = parseInt(document.getElementById("betAmount").value);
+
+  if(!selectedBet){
+    alert("Select Bet First");
+    return;
+  }
+
+  if(!bet || bet > balance){
+    alert("Invalid Bet Amount");
+    return;
+  }
+
+  let dragon = Math.floor(Math.random()*13)+1;
+  let tiger = Math.floor(Math.random()*13)+1;
+
+  document.getElementById("dragonCard").innerHTML = dragon;
+  document.getElementById("tigerCard").innerHTML = tiger;
+
+  let resultText = "";
+
+  if(dragon > tiger){
+    resultText = "Dragon Wins";
+    if(selectedBet == "dragon"){
+      balance += bet;
+    }else{
+      balance -= bet;
+    }
+  }
+  else if(tiger > dragon){
+    resultText = "Tiger Wins";
+    if(selectedBet == "tiger"){
+      balance += bet;
+    }else{
+      balance -= bet;
+    }
+  }
+  else{
+    resultText = "Tie";
+    if(selectedBet == "tie"){
+      balance += bet * 49;
+    }else{
+      balance -= bet;
+    }
+  }
+
+  document.getElementById("balance").innerHTML = balance;
+  document.getElementById("result").innerHTML = resultText;
+
+}
+
+</script>
+
+</body>
+</html>

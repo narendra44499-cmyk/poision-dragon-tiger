@@ -1,114 +1,143 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ultimate Dragon Tiger</title>
+<title>Live Dragon Tiger</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{
-  margin:0;
-  font-family:Arial;
-  text-align:center;
-  background:linear-gradient(to bottom,#000428,#004e92);
-  color:white;
+margin:0;
+font-family:Arial;
+background:linear-gradient(to bottom,#000428,#004e92);
+color:white;
+text-align:center;
 }
-h1{margin-top:15px;}
 
-.balance-box{
-  font-size:20px;
-  margin:10px;
+.header{
+background:#111;
+padding:12px;
+font-size:22px;
+font-weight:bold;
+}
+
+.balance{
+margin:10px;
+font-size:18px;
+}
+
+.video-container{
+width:100%;
+height:230px;
+}
+
+iframe{
+width:100%;
+height:100%;
+border:none;
 }
 
 .game-box{
-  background:#111;
-  padding:20px;
-  border-radius:15px;
-  box-shadow:0 0 25px cyan;
-  width:90%;
-  margin:auto;
+background:#111;
+margin:15px;
+padding:15px;
+border-radius:15px;
+box-shadow:0 0 20px cyan;
 }
 
 .card{
-  width:100px;
-  margin:10px;
+width:100px;
+margin:10px;
 }
 
 button{
-  padding:10px 18px;
-  margin:5px;
-  font-size:15px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
+padding:10px 18px;
+margin:5px;
+font-size:15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
 }
 
-.dragon-btn{background:red;color:white;}
-.tiger-btn{background:orange;color:black;}
-.tie-btn{background:purple;color:white;}
-.play-btn{background:lime;color:black;}
+.dragon{background:red;color:white;}
+.tiger{background:orange;color:black;}
+.tie{background:purple;color:white;}
+.play{background:lime;color:black;}
 
 input{
-  padding:8px;
-  border-radius:6px;
-  border:none;
+padding:8px;
+border-radius:6px;
+border:none;
+margin-top:5px;
 }
 
 .history{
-  margin-top:15px;
-  font-size:18px;
+margin-top:10px;
+font-size:16px;
 }
 
 .admin{
-  display:none;
-  background:#222;
-  padding:10px;
-  margin-top:15px;
-  border-radius:10px;
+display:none;
+background:#222;
+padding:10px;
+margin:10px;
+border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🐉 DRAGON TIGER 🐅</h1>
+<div class="header">🐉 LIVE DRAGON TIGER 🐅</div>
 
-<div class="balance-box">
+<div class="balance">
 Balance: ₹<span id="balance">1000</span>
 </div>
 
-<input type="number" id="betAmount" placeholder="Enter Bet Amount">
-<br><br>
-
-<button class="dragon-btn" onclick="selectBet('Dragon')">Dragon</button>
-<button class="tiger-btn" onclick="selectBet('Tiger')">Tiger</button>
-<button class="tie-btn" onclick="selectBet('Tie')">Tie</button>
-
-<br><br>
-
-<div class="game-box">
-<h2>DRAGON</h2>
-<img id="dragonCard" class="card">
-<h2>TIGER</h2>
-<img id="tigerCard" class="card">
+<!-- LIVE STREAM -->
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/live_stream?channel=UC4R8DWoMoI7CAwX8_LjQHig"></iframe>
 </div>
 
-<br>
-<button class="play-btn" onclick="playGame()">Play Game</button>
+<!-- CARD GAME SECTION (OLD GAME KEPT) -->
+<div class="game-box">
 
-<h2 id="result"></h2>
+<h2>DRAGON</h2>
+<img id="dragonCard" class="card">
+
+<h2>TIGER</h2>
+<img id="tigerCard" class="card">
+
+<br>
+
+<input type="number" id="betAmount" placeholder="Enter Bet Amount">
+
+<br>
+
+<button class="dragon" onclick="selectBet('Dragon')">Dragon</button>
+<button class="tiger" onclick="selectBet('Tiger')">Tiger</button>
+<button class="tie" onclick="selectBet('Tie')">Tie</button>
+
+<br>
+
+<button class="play" onclick="playGame()">Play Game</button>
+
+<h3 id="result"></h3>
 
 <div class="history">
 Last Results: <span id="historyList"></span>
 </div>
 
-<!-- Secret Admin -->
+</div>
+
+<!-- ADMIN PANEL -->
 <div class="admin" id="adminPanel">
 <h3>Admin Panel</h3>
 <input type="number" id="adminBalance" placeholder="Set Balance">
-<button onclick="setBalance()">Update</button>
+<button onclick="setBalance()">Update Balance</button>
 </div>
 
 <script>
+
 let balance=1000;
 let selectedBet="";
 let history=[];
@@ -123,7 +152,8 @@ const values={"A":14,"K":13,"Q":12,"J":11,
 "5":5,"4":4,"3":3,"2":2};
 
 function selectBet(type){
-  selectedBet=type;
+selectedBet=type;
+alert("Selected: "+type);
 }
 
 function playGame(){
@@ -148,14 +178,12 @@ else if(tigerValue>dragonValue)winner="Tiger";
 else winner="Tie";
 
 if(selectedBet==winner){
-   if(winner=="Tie") balance+=bet*8;
-   else balance+=bet*2;
-   document.getElementById("result").innerText="🎉 You Win! "+winner;
-   playSound("win");
+if(winner=="Tie") balance+=bet*8;
+else balance+=bet*2;
+document.getElementById("result").innerText="🎉 You Win! "+winner;
 }else{
-   balance-=bet;
-   document.getElementById("result").innerText="❌ You Lose! "+winner;
-   playSound("lose");
+balance-=bet;
+document.getElementById("result").innerText="❌ You Lose! Winner: "+winner;
 }
 
 history.unshift(winner[0]);
@@ -165,27 +193,20 @@ document.getElementById("historyList").innerText=history.join(" ");
 document.getElementById("balance").innerText=balance;
 }
 
-function playSound(type){
-let audio=new Audio();
-if(type=="win") audio.src="https://www.soundjay.com/buttons/sounds/button-4.mp3";
-else audio.src="https://www.soundjay.com/buttons/sounds/button-10.mp3";
-audio.play();
-}
-
 function setBalance(){
 let newBal=parseInt(document.getElementById("adminBalance").value);
 if(newBal>=0){
- balance=newBal;
- document.getElementById("balance").innerText=balance;
+balance=newBal;
+document.getElementById("balance").innerText=balance;
 }
 }
 
-// Secret Admin Unlock
 document.addEventListener("keydown",function(e){
- if(e.key=="a"){
-   document.getElementById("adminPanel").style.display="block";
- }
+if(e.key=="a"){
+document.getElementById("adminPanel").style.display="block";
+}
 });
+
 </script>
 
 </body>

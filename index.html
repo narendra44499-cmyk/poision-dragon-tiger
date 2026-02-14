@@ -1,21 +1,12 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <title>Live Dragon Tiger</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body{<!-- LIVE STREAM VIDEO START -->
-<div style="width:100%;height:250px;">
-  <iframe 
-    src="https://www.youtube.com/embed/HxpMerfLeMk?autoplay=1&mute=0"
-    width="100%" 
-    height="250"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen>
-  </iframe>
-</div>
-<!-- LIVE STREAM VIDEO END -->
+body{
 margin:0;
 font-family:Arial;
 background:linear-gradient(to bottom,#000428,#004e92);
@@ -37,7 +28,7 @@ font-size:18px;
 
 .video-container{
 width:100%;
-height:230px;
+height:250px;
 }
 
 iframe{
@@ -100,16 +91,18 @@ border-radius:10px;
 
 <div class="header">🐉 LIVE DRAGON TIGER 🐅</div>
 
-<div class="balance">
-Balance: ₹<span id="balance">1000</span>
-</div>
+<div class="balance">Balance: ₹<span id="balance">1000</span></div>
 
-<!-- LIVE STREAM -->
+<!-- LIVE YOUTUBE VIDEO -->
 <div class="video-container">
-<iframe src="https://www.youtube.com/embed/live_stream?channel=UC4R8DWoMoI7CAwX8_LjQHig"></iframe>
+  <iframe 
+    src="https://www.youtube.com/embed/HxpMerfLeMk?autoplay=1&mute=0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+  </iframe>
 </div>
 
-<!-- CARD GAME SECTION (OLD GAME KEPT) -->
+<!-- GAME SECTION -->
 <div class="game-box">
 
 <h2>DRAGON</h2>
@@ -148,7 +141,6 @@ Last Results: <span id="historyList"></span>
 </div>
 
 <script>
-
 let balance=1000;
 let selectedBet="";
 let history=[];
@@ -164,11 +156,9 @@ const values={"A":14,"K":13,"Q":12,"J":11,
 
 function selectBet(type){
 selectedBet=type;
-alert("Selected: "+type);
 }
 
 function playGame(){
-
 let bet=parseInt(document.getElementById("betAmount").value);
 if(!bet||bet<=0)return alert("Enter valid bet");
 if(bet>balance)return alert("Not enough balance");
@@ -217,7 +207,6 @@ if(e.key=="a"){
 document.getElementById("adminPanel").style.display="block";
 }
 });
-
 </script>
 
 </body>

@@ -1,136 +1,186 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Dragon Tiger</title>
+<meta charset="UTF-8">
+<title>Live Dragon Tiger</title>
 <style>
 body{
-    background:#1e2a38;
-    font-family:Arial;
-    text-align:center;
-    color:white;
+background:linear-gradient(to right,#001f3f,#003366);
+color:white;
+text-align:center;
+font-family:Arial;
+margin:0;
 }
 
-button{
-    padding:15px 25px;
-    margin:10px;
-    border:none;
-    border-radius:8px;
-    font-size:18px;
-    cursor:pointer;
+.header{
+background:black;
+padding:15px;
+font-size:24px;
+font-weight:bold;
 }
 
-.dragon{background:#c0392b;color:white;}
-.tie{background:#8e44ad;color:white;}
-.tiger{background:#f39c12;color:black;}
+.balance{
+background:#002b80;
+padding:10px;
+font-size:20px;
+}
 
-.evenodd{
-    background:linear-gradient(to right,#0f5b8d,#167bb5);
-    color:white;
-    width:140px;
+.game-box{
+background:#111;
+margin:20px;
+padding:20px;
+border-radius:20px;
+box-shadow:0 0 20px cyan;
+}
+
+.card{
+font-size:60px;
+margin:10px;
 }
 
 input{
-    padding:10px;
-    width:200px;
-    font-size:18px;
-    border-radius:6px;
-    border:none;
+padding:10px;
+font-size:18px;
+width:150px;
+border-radius:10px;
+border:none;
+text-align:center;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+font-size:18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+.dragon{background:red;color:white;}
+.tiger{background:orange;color:black;}
+.tie{background:purple;color:white;}
+.play{background:lime;color:black;font-weight:bold;}
+
+.result{
+font-size:20px;
+margin-top:10px;
+}
+
+.evenodd{
+margin-top:30px;
+}
+
+.evenodd button{
+background:#1f6fa5;
+color:white;
+width:120px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>LIVE GAME AREA</h2>
+<div class="header">🐉 LIVE DRAGON TIGER 🐯</div>
+<div class="balance">Balance: ₹<span id="balance">1000</span></div>
 
-<!-- MAIN BET BUTTONS -->
-<button class="dragon" onclick="selectBet('Dragon')">Dragon</button>
-<button class="tie" onclick="selectBet('Tie')">Tie</button>
-<button class="tiger" onclick="selectBet('Tiger')">Tiger</button>
+<div class="game-box">
 
-<br><br>
-
-<input type="number" id="betAmount" placeholder="Enter Amount">
-
-<br><br>
-
-<button style="background:#2ecc71;color:black;" onclick="placeBet()">Place Bet</button>
-
-<h3 id="resultText"></h3>
-
-<hr style="margin:40px 0;">
-
-<!-- DRAGON EVEN ODD SECTION -->
 <h2>DRAGON</h2>
+<div id="dragonCard" class="card">🂠</div>
 
-<div style="display:flex;justify-content:center;gap:20px;">
+<h2>TIGER</h2>
+<div id="tigerCard" class="card">🂠</div>
 
-    <button class="evenodd" onclick="selectBet('Dragon Even')">
-        2.1<br>Even
-    </button>
+<br>
+<input type="number" id="betAmount" value="10">
 
-    <button class="evenodd" onclick="selectBet('Dragon Odd')">
-        1.79<br>Odd
-    </button>
+<br>
+<button class="dragon" onclick="setBet('dragon')">Dragon</button>
+<button class="tiger" onclick="setBet('tiger')">Tiger</button>
+<button class="tie" onclick="setBet('tie')">Tie</button>
+
+<br>
+<button class="play" onclick="playGame()">Play Game</button>
+
+<div class="result" id="result"></div>
+<div class="result">Last Results: <span id="history"></span></div>
+
+<!-- EVEN ODD SECTION -->
+<div class="evenodd">
+<h3>DRAGON EVEN / ODD</h3>
+<button onclick="evenOddBet('even')">2.1 Even</button>
+<button onclick="evenOddBet('odd')">1.79 Odd</button>
+</div>
 
 </div>
 
 <script>
-
-let selectedBet = "";
 let balance = 1000;
+let selectedBet = "";
+let evenOddSelected = "";
+let history = "";
 
-function selectBet(type){
-    selectedBet = type;
+function setBet(type){
+selectedBet = type;
+evenOddSelected="";
 }
 
-function placeBet(){
-
-    let bet = parseFloat(document.getElementById("betAmount").value);
-    if(!bet || bet <= 0){
-        alert("Enter valid amount");
-        return;
-    }
-
-    // Random cards 1–13
-    let dragonCard = Math.floor(Math.random()*13)+1;
-    let tigerCard = Math.floor(Math.random()*13)+1;
-
-    let result = "";
-    let winAmount = 0;
-
-    // NORMAL GAME LOGIC
-    if(dragonCard > tigerCard) result = "Dragon";
-    else if(tigerCard > dragonCard) result = "Tiger";
-    else result = "Tie";
-
-    if(selectedBet === result){
-        winAmount = bet * 2;
-    }
-
-    // DRAGON EVEN / ODD LOGIC
-    if(selectedBet === "Dragon Even" && dragonCard % 2 === 0){
-        winAmount = bet * 2.1;
-        result = "Dragon Even";
-    }
-
-    if(selectedBet === "Dragon Odd" && dragonCard % 2 !== 0){
-        winAmount = bet * 1.79;
-        result = "Dragon Odd";
-    }
-
-    if(winAmount > 0){
-        balance += winAmount - bet;
-        document.getElementById("resultText").innerHTML =
-            "Result: "+result+" - You Won ₹"+winAmount;
-    }else{
-        balance -= bet;
-        document.getElementById("resultText").innerHTML =
-            "Result: "+result+" - You Lost ₹"+bet;
-    }
-
+function evenOddBet(type){
+evenOddSelected = type;
+selectedBet="";
 }
 
+function getRandomCard(){
+return Math.floor(Math.random()*13)+1;
+}
+
+function playGame(){
+
+let bet = parseInt(document.getElementById("betAmount").value);
+if(bet > balance){ alert("Not enough balance"); return;}
+
+let dragon = getRandomCard();
+let tiger = getRandomCard();
+
+document.getElementById("dragonCard").innerText = dragon;
+document.getElementById("tigerCard").innerText = tiger;
+
+let winner="";
+
+if(dragon > tiger) winner="dragon";
+else if(tiger > dragon) winner="tiger";
+else winner="tie";
+
+balance -= bet;
+let winAmount = 0;
+
+if(selectedBet){
+if(selectedBet==winner){
+winAmount = bet*2;
+balance += winAmount;
+document.getElementById("result").innerHTML="✅ You Win ₹"+winAmount+" | Winner: "+winner.toUpperCase();
+}else{
+document.getElementById("result").innerHTML="❌ You Lose! Winner: "+winner.toUpperCase();
+}
+history += winner.charAt(0).toUpperCase()+" ";
+}
+
+if(evenOddSelected){
+let type = (dragon%2==0)?"even":"odd";
+if(type==evenOddSelected){
+let ratio = (type=="even")?2.1:1.79;
+winAmount = Math.floor(bet*ratio);
+balance += winAmount;
+document.getElementById("result").innerHTML="✅ Even/Odd Win ₹"+winAmount+" ("+type.toUpperCase()+")";
+}else{
+document.getElementById("result").innerHTML="❌ Even/Odd Lose ("+type.toUpperCase()+")";
+}
+}
+
+document.getElementById("balance").innerText = balance;
+document.getElementById("history").innerText = history;
+
+}
 </script>
 
 </body>

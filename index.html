@@ -22,11 +22,7 @@ body{
   font-weight:bold;
 }
 
-.topbar span{
-  margin:0 10px;
-}
-
-/* Game Video Area */
+/* Live Area */
 .video-area{
   height:220px;
   background:#000;
@@ -38,67 +34,51 @@ body{
 
 /* Betting Section */
 .bet-section{
-  padding:15px;
+  padding:20px;
+  text-align:center;
 }
 
 .bet-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
+  display:flex;
+  justify-content:space-between;
   gap:10px;
   margin-bottom:20px;
 }
 
 .bet-box{
-  background:#34495e;
+  flex:1;
   padding:20px;
-  text-align:center;
-  border-radius:8px;
+  border-radius:10px;
   font-weight:bold;
+  font-size:18px;
+  cursor:pointer;
 }
 
 .dragon{ background:#c0392b; }
-.tiger{ background:#f39c12; color:black; }
 .tie{ background:#8e44ad; }
-
-/* Big Panel */
-.big-panels{
-  display:flex;
-  gap:10px;
-}
-
-.big-box{
-  flex:1;
-  padding:30px;
-  text-align:center;
-  border-radius:10px;
-  font-size:22px;
-  font-weight:bold;
-}
-
-.big-dragon{ background:#e74c3c; }
-.big-tiger{ background:#f1c40f; color:black; }
+.tiger{ background:#f39c12; color:black; }
 
 /* Controls */
-.controls{
-  text-align:center;
-  margin-top:20px;
-}
-
 input{
   padding:10px;
-  width:60%;
+  width:70%;
   border-radius:6px;
   border:none;
+  margin-bottom:10px;
 }
 
 button{
   padding:12px 20px;
-  margin-top:10px;
   border:none;
   border-radius:6px;
   font-weight:bold;
   background:#2ecc71;
   cursor:pointer;
+}
+
+#result{
+  margin-top:15px;
+  font-size:18px;
 }
 </style>
 </head>
@@ -118,40 +98,46 @@ button{
 <div class="bet-section">
 
   <div class="bet-grid">
-    <div class="bet-box dragon">Dragon</div>
-    <div class="bet-box tie">Tie</div>
-    <div class="bet-box tiger">Tiger</div>
+    <div class="bet-box dragon" onclick="selectBet('Dragon')">Dragon</div>
+    <div class="bet-box tie" onclick="selectBet('Tie')">Tie</div>
+    <div class="bet-box tiger" onclick="selectBet('Tiger')">Tiger</div>
   </div>
 
-  <div class="big-panels">
-    <div class="big-box big-dragon">DRAGON</div>
-    <div class="big-box big-tiger">TIGER</div>
-  </div>
+  <input type="number" id="betAmount" placeholder="Enter Bet Amount">
+  <br>
+  <button onclick="playGame()">Place Bet</button>
 
-  <div class="controls">
-    <br>
-    <input type="number" id="betAmount" placeholder="Enter Bet Amount">
-    <br>
-    <button onclick="playGame()">Place Bet</button>
-    <p id="result"></p>
-  </div>
+  <p id="result"></p>
 
 </div>
 
 <script>
 let balance=1000;
+let selectedBet="";
+
+function selectBet(type){
+ selectedBet=type;
+ alert(type+" selected");
+}
 
 function playGame(){
  let bet=parseInt(document.getElementById("betAmount").value);
+ if(!selectedBet){alert("Select Dragon/Tiger/Tie");return;}
  if(!bet || bet<=0){alert("Enter valid amount");return;}
  if(bet>balance){alert("Insufficient Balance");return;}
 
  let options=["Dragon","Tiger","Tie"];
  let result=options[Math.floor(Math.random()*3)];
 
- balance-=bet;
+ if(result===selectedBet){
+   balance+=bet;
+   document.getElementById("result").innerText="Result: "+result+" - You Won ₹"+bet;
+ }else{
+   balance-=bet;
+   document.getElementById("result").innerText="Result: "+result+" - You Lost ₹"+bet;
+ }
+
  document.getElementById("balance").innerText=balance;
- document.getElementById("result").innerText="Result: "+result;
 }
 </script>
 

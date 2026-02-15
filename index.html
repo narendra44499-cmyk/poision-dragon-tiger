@@ -147,7 +147,6 @@ font-weight:bold;
 <button class="green" onclick="play()">PLAY</button>
 
 <div class="win" id="result"></div>
-
 <div class="history" id="history"></div>
 
 </div>
@@ -165,7 +164,7 @@ document.getElementById("balance").innerText=balance.toFixed(2);
 
 function bet(type){
 let amt=parseFloat(document.getElementById("betAmount").value);
-if(amt>balance){alert("Insufficient balance");return;}
+if(amt>balance)return;
 balance-=amt;
 bets.push({type:type,amount:amt});
 updateBalance();
@@ -178,7 +177,6 @@ return {value:values[v],num:v+1,suit:suits[s]};
 }
 
 function play(){
-if(bets.length===0){alert("Place bet first");return;}
 
 let d=randomCard();
 let t=randomCard();
@@ -216,7 +214,7 @@ if(winner==="tie" && (b.type==="dragon"||b.type==="tiger")) totalWin+=b.amount;
 balance+=totalWin;
 updateBalance();
 
-document.getElementById("result").innerText= totalWin>0 ? "🎉 WIN ₹"+totalWin.toFixed(2) : "No Win";
+document.getElementById("result").innerText= totalWin>0 ? "🎉 WIN ₹"+totalWin.toFixed(2) : "";
 
 let h=document.getElementById("history");
 let c=document.createElement("div");

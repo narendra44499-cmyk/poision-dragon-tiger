@@ -2,235 +2,107 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Dragon Tiger Pro</title>
+<title>Aviator Demo</title>
 <style>
 body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(#0b3d6e,#062d52);
-color:white;
-text-align:center;
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+    text-align:center;
 }
 
-.header{
-padding:15px;
-font-size:20px;
-background:#0d2c4f;
+#game{
+    position:relative;
+    height:400px;
+    overflow:hidden;
+    background:radial-gradient(circle at bottom, #1e293b, #000);
 }
 
-.balance{
-margin-top:5px;
+#plane{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    width:80px;
+    transition: all linear;
 }
 
-.container{
-width:340px;
-margin:20px auto;
-background:black;
-padding:20px;
-border-radius:20px;
-box-shadow:0 0 25px cyan;
-}
-
-.cards{
-display:flex;
-justify-content:space-around;
-margin-bottom:15px;
-}
-
-.card img{
-width:110px;
-border-radius:10px;
-box-shadow:0 0 10px cyan;
-}
-
-input{
-width:150px;
-padding:5px;
-margin:10px;
-text-align:center;
+#multiplier{
+    font-size:50px;
+    margin-top:20px;
+    font-weight:bold;
 }
 
 button{
-padding:7px 12px;
-margin:4px;
-border:none;
-border-radius:8px;
-color:white;
-cursor:pointer;
-font-size:13px;
+    padding:12px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin:10px;
 }
 
-.red{background:red;}
-.orange{background:orange;color:black;}
-.purple{background:purple;}
-.blue{background:#2b6cb0;}
-.green{background:lime;color:black;}
-
-.section-title{
-margin-top:15px;
-font-weight:bold;
-}
-
-.history{
-margin-top:15px;
-}
-
-.circle{
-display:inline-block;
-width:25px;
-height:25px;
-line-height:25px;
-border-radius:50%;
-margin:2px;
-font-size:12px;
-font-weight:bold;
-}
-
-.d{background:red;}
-.t{background:orange;color:black;}
-.s{background:purple;}
-
-.win{
-margin-top:10px;
-font-weight:bold;
-}
+#betBtn{ background:green; color:white; }
+#cashBtn{ background:red; color:white; }
 </style>
 </head>
+
 <body>
 
-<div class="header">
-🐉 DRAGON TIGER PRO 🐯
-<div class="balance">Balance: ₹<span id="balance">1000000</span></div>
+<h1>Aviator Demo</h1>
+<div id="multiplier">1.00x</div>
+
+<div id="game">
+    <img id="plane" src="https://cdn-icons-png.flaticon.com/512/684/684908.png">
 </div>
 
-<div class="container">
-
-<div class="cards">
-<div class="card">
-<div>Dragon</div>
-<img id="dragonCard" src="https://deckofcardsapi.com/static/img/KH.png">
-</div>
-
-<div class="card">
-<div>Tiger</div>
-<img id="tigerCard" src="https://deckofcardsapi.com/static/img/QS.png">
-</div>
-</div>
-
-<input type="number" id="betAmount" value="200">
-
-<div>
-<button class="red" onclick="bet('dragon')">Dragon 2x</button>
-<button class="orange" onclick="bet('tiger')">Tiger 2x</button>
-<button class="purple" onclick="bet('tie')">Tie 8x</button>
-<button class="blue" onclick="bet('pair')">Pair 12x</button>
-<button class="blue" onclick="bet('suited')">Suited Tie 50x</button>
-</div>
-
-<div class="section-title">Dragon Options</div>
-<div>
-<button class="blue" onclick="bet('d_even')">Even 2.1</button>
-<button class="blue" onclick="bet('d_odd')">Odd 1.79</button>
-<button class="blue" onclick="bet('d_red')">Red 1.95</button>
-<button class="blue" onclick="bet('d_black')">Black 1.95</button>
-</div>
-
-<div class="section-title">Tiger Options</div>
-<div>
-<button class="blue" onclick="bet('t_even')">Even 2.1</button>
-<button class="blue" onclick="bet('t_odd')">Odd 1.79</button>
-<button class="blue" onclick="bet('t_red')">Red 1.95</button>
-<button class="blue" onclick="bet('t_black')">Black 1.95</button>
-</div>
-
-<br>
-<button class="green" onclick="play()">PLAY</button>
-
-<div class="win" id="result"></div>
-<div class="history" id="history"></div>
-
-</div>
+<button id="betBtn">Start Bet</button>
+<button id="cashBtn" disabled>Cash Out</button>
 
 <script>
-let balance=1000000;
-let bets=[];
+let multiplier = 1.00;
+let crashPoint;
+let interval;
+let playing = false;
 
-const suits=["H","D","C","S"];
-const values=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+const plane = document.getElementById("plane");
+const multiText = document.getElementById("multiplier");
+const betBtn = document.getElementById("betBtn");
+const cashBtn = document.getElementById("cashBtn");
 
-function updateBalance(){
-document.getElementById("balance").innerText=balance.toFixed(2);
-}
+betBtn.onclick = function(){
+    if(playing) return;
+    playing = true;
+    multiplier = 1.00;
+    crashPoint = (Math.random()*5 + 1).toFixed(2); // crash between 1x - 6x
+    plane.style.bottom = "20px";
+    plane.style.left = "20px";
+    cashBtn.disabled = false;
 
-function bet(type){
-let amt=parseFloat(document.getElementById("betAmount").value);
-if(amt>balance){alert("Insufficient balance");return;}
-balance-=amt;
-bets.push({type:type,amount:amt});
-updateBalance();
-}
+    interval = setInterval(()=>{
+        multiplier += 0.02;
+        multiText.innerHTML = multiplier.toFixed(2) + "x";
 
-function randomCard(){
-let v=Math.floor(Math.random()*13);
-let s=Math.floor(Math.random()*4);
-return {value:values[v],num:v+1,suit:suits[s]};
-}
+        plane.style.bottom = (20 + multiplier*30) + "px";
+        plane.style.left = (20 + multiplier*40) + "px";
 
-function play(){
-if(bets.length===0){alert("Place bet first");return;}
+        if(multiplier >= crashPoint){
+            clearInterval(interval);
+            multiText.innerHTML = "Crashed at " + crashPoint + "x";
+            cashBtn.disabled = true;
+            playing = false;
+        }
 
-let d=randomCard();
-let t=randomCard();
+    },100);
+};
 
-document.getElementById("dragonCard").src="https://deckofcardsapi.com/static/img/"+d.value+d.suit+".png";
-document.getElementById("tigerCard").src="https://deckofcardsapi.com/static/img/"+t.value+t.suit+".png";
-
-let winner="";
-if(d.num>t.num) winner="dragon";
-else if(t.num>d.num) winner="tiger";
-else winner="tie";
-
-let totalWin=0;
-
-bets.forEach(b=>{
-if(b.type==="dragon" && winner==="dragon") totalWin+=b.amount*2;
-if(b.type==="tiger" && winner==="tiger") totalWin+=b.amount*2;
-if(b.type==="tie" && winner==="tie") totalWin+=b.amount*8;
-if(b.type==="pair" && d.value===t.value) totalWin+=b.amount*12;
-if(b.type==="suited" && winner==="tie" && d.suit===t.suit) totalWin+=b.amount*50;
-
-if(b.type==="d_even" && d.num%2===0) totalWin+=b.amount*2.1;
-if(b.type==="d_odd" && d.num%2!==0) totalWin+=b.amount*1.79;
-if(b.type==="d_red" && (d.suit==="H"||d.suit==="D")) totalWin+=b.amount*1.95;
-if(b.type==="d_black" && (d.suit==="S"||d.suit==="C")) totalWin+=b.amount*1.95;
-
-if(b.type==="t_even" && t.num%2===0) totalWin+=b.amount*2.1;
-if(b.type==="t_odd" && t.num%2!==0) totalWin+=b.amount*1.79;
-if(b.type==="t_red" && (t.suit==="H"||t.suit==="D")) totalWin+=b.amount*1.95;
-if(b.type==="t_black" && (t.suit==="S"||t.suit==="C")) totalWin+=b.amount*1.95;
-
-if(winner==="tie" && (b.type==="dragon"||b.type==="tiger")) totalWin+=b.amount;
-});
-
-balance+=totalWin;
-updateBalance();
-
-document.getElementById("result").innerText=
- totalWin>0 ? "🎉 WIN ₹"+totalWin.toFixed(2) : "No Win";
-
-let h=document.getElementById("history");
-let c=document.createElement("div");
-c.classList.add("circle");
-if(winner==="dragon"){c.classList.add("d");c.innerText="D";}
-if(winner==="tiger"){c.classList.add("t");c.innerText="T";}
-if(winner==="tie"){c.classList.add("s");c.innerText="S";}
-h.prepend(c);
-if(h.children.length>12)h.removeChild(h.lastChild);
-
-bets=[];
-}
-
-updateBalance();
+cashBtn.onclick = function(){
+    if(!playing) return;
+    clearInterval(interval);
+    multiText.innerHTML = "You cashed out at " + multiplier.toFixed(2) + "x";
+    cashBtn.disabled = true;
+    playing = false;
+};
 </script>
 
 </body>

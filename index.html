@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Dragon Tiger Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body{
 margin:0;
@@ -20,6 +22,11 @@ background:#0d2c4f;
 
 .balance{
 margin-top:5px;
+}
+
+.profit{
+font-size:14px;
+color:lime;
 }
 
 .container{
@@ -41,6 +48,15 @@ margin-bottom:15px;
 width:110px;
 border-radius:10px;
 box-shadow:0 0 10px cyan;
+transition:transform .6s;
+}
+
+.flip{
+transform:rotateY(360deg);
+}
+
+.glow{
+box-shadow:0 0 25px lime !important;
 }
 
 input{
@@ -58,6 +74,11 @@ border-radius:8px;
 color:white;
 cursor:pointer;
 font-size:13px;
+transition:transform .1s;
+}
+
+button:active{
+transform:scale(0.92);
 }
 
 .red{background:red;}
@@ -94,6 +115,11 @@ font-weight:bold;
 margin-top:10px;
 font-weight:bold;
 }
+
+@media(max-width:400px){
+.container{width:95%;}
+.card img{width:90px;}
+}
 </style>
 </head>
 <body>
@@ -101,6 +127,7 @@ font-weight:bold;
 <div class="header">
 🐉 DRAGON TIGER PRO 🐯
 <div class="balance">Balance: ₹<span id="balance">1000</span></div>
+<div class="profit">Session Profit: ₹<span id="profit">0</span></div>
 </div>
 
 <div class="container">
@@ -147,13 +174,16 @@ font-weight:bold;
 <button class="green" onclick="play()">PLAY</button>
 
 <div class="win" id="result"></div>
-
 <div class="history" id="history"></div>
 
 </div>
 
+<audio id="dealSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+
 <script>
 let balance=1000;
+let sessionProfit=0;
 let bets=[];
 
 const suits=["H","D","C","S"];
@@ -161,12 +191,14 @@ const values=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
 function updateBalance(){
 document.getElementById("balance").innerText=balance.toFixed(2);
+document.getElementById("profit").innerText=sessionProfit.toFixed(2);
 }
 
 function bet(type){
 let amt=parseFloat(document.getElementById("betAmount").value);
 if(amt>balance){alert("Insufficient balance");return;}
 balance-=amt;
+sessionProfit-=amt;
 bets.push({type:type,amount:amt});
 updateBalance();
 }
@@ -180,11 +212,26 @@ return {value:values[v],num:v+1,suit:suits[s]};
 function play(){
 if(bets.length===0){alert("Place bet first");return;}
 
+let dragonImg=document.getElementById("dragonCard");
+let tigerImg=document.getElementById("tigerCard");
+
+dragonImg.classList.add("flip");
+tigerImg.classList.add("flip");
+
+document.getElementById("dealSound").play();
+
+setTimeout(()=>{
+
 let d=randomCard();
 let t=randomCard();
 
-document.getElementById("dragonCard").src="https://deckofcardsapi.com/static/img/"+d.value+d.suit+".png";
-document.getElementById("tigerCard").src="https://deckofcardsapi.com/static/img/"+t.value+t.suit+".png";
+dragonImg.src="https://deckofcardsapi.com/static/img/"+d.value+d.suit+".png";
+tigerImg.src="https://deckofcardsapi.com/static/img/"+t.value+t.suit+".png";
+
+dragonImg.classList.remove("flip");
+tigerImg.classList.remove("flip");
+dragonImg.classList.remove("glow");
+tigerImg.classList.remove("glow");
 
 let winner="";
 if(d.num>t.num) winner="dragon";
@@ -213,6 +260,14 @@ if(b.type==="t_black" && (t.suit==="S"||t.suit==="C")) totalWin+=b.amount*1.95;
 if(winner==="tie" && (b.type==="dragon"||b.type==="tiger")) totalWin+=b.amount;
 });
 
+if(winner==="dragon") dragonImg.classList.add("glow");
+if(winner==="tiger") tigerImg.classList.add("glow");
+
+if(totalWin>0){
+document.getElementById("winSound").play();
+sessionProfit+=totalWin;
+}
+
 balance+=totalWin;
 updateBalance();
 
@@ -228,10 +283,12 @@ h.prepend(c);
 if(h.children.length>12)h.removeChild(h.lastChild);
 
 bets=[];
+
+},600);
 }
 
 updateBalance();
 </script>
 
 </body>
-</html>
+  </html>

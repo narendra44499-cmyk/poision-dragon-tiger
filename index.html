@@ -2,19 +2,18 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ULTIMATE DRAGON TIGER PRO</title>
+<title>Dragon Tiger Pro</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(90deg,#001f3f,#003f7f);
+background:linear-gradient(#021b33,#003366);
 color:white;
 text-align:center;
-transition:0.4s;
 }
 
-.header{
+header{
 background:black;
 padding:15px;
 font-size:22px;
@@ -22,258 +21,228 @@ font-weight:bold;
 }
 
 .balance{
-background:#012a63;
 padding:10px;
-font-size:18px;
+background:#0d2a52;
 }
 
 .container{
-max-width:430px;
+width:90%;
+max-width:500px;
 margin:20px auto;
-background:#000;
-padding:20px;
+background:black;
 border-radius:20px;
-box-shadow:0 0 30px cyan;
+padding:20px;
+box-shadow:0 0 20px cyan;
+}
+
+.cards{
+display:flex;
+justify-content:space-around;
+margin-bottom:20px;
 }
 
 .card{
-width:140px;
-height:200px;
-margin:10px;
-border-radius:12px;
-box-shadow:0 0 20px cyan;
-transition:0.6s;
-}
-
-.flip{
-transform:scale(1.05);
-}
-
-.row{
+background:white;
+color:black;
+width:120px;
+height:170px;
+border-radius:10px;
 display:flex;
-justify-content:space-around;
+align-items:center;
+justify-content:center;
+font-size:28px;
+font-weight:bold;
+}
+
+input{
+padding:8px;
+width:100px;
+text-align:center;
+margin:10px;
 }
 
 button{
-margin:5px;
 padding:8px 12px;
+margin:5px;
 border:none;
 border-radius:8px;
-font-weight:bold;
 cursor:pointer;
+font-weight:bold;
 }
 
-.activeBet{
-outline:3px solid yellow;
-box-shadow:0 0 15px yellow;
-}
-
-.main{background:red;color:white;}
-.tiger{background:orange;color:black;}
-.tie{background:purple;color:white;}
-.option{background:#1e5fa8;color:white;}
-.play{background:lime;color:black;padding:12px 25px;}
+.main-btn{background:red;color:white;}
+.option-btn{background:#1e4c85;color:white;}
+.play{background:lime;color:black;}
 .reset{background:cyan;color:black;}
 .auto{background:gold;color:black;}
 
-.history span{
-display:inline-block;
-margin:3px;
-padding:6px 8px;
-border-radius:50%;
-font-size:13px;
+.result{
+margin-top:10px;
+font-size:18px;
+font-weight:bold;
 }
 
+.history{
+margin-top:10px;
+}
+
+.history span{
+display:inline-block;
+width:25px;
+height:25px;
+line-height:25px;
+border-radius:50%;
+margin:2px;
+font-size:12px;
+}
 .D{background:red;}
-.T{background:orange;color:black;}
+.T{background:orange;}
 .S{background:purple;}
 </style>
 </head>
 
 <body>
 
-<div class="header">🐉 DRAGON TIGER PRO 🐯</div>
+<header>🐉 DRAGON TIGER PRO 🐯</header>
 <div class="balance">Balance: ₹<span id="balance">1000</span></div>
 
 <div class="container">
 
-<div class="row">
+<div class="cards">
 <div>
 <h3>Dragon</h3>
-<img id="dragonCard" class="card">
+<div class="card" id="dragonCard">?</div>
 </div>
+
 <div>
 <h3>Tiger</h3>
-<img id="tigerCard" class="card">
+<div class="card" id="tigerCard">?</div>
 </div>
 </div>
 
-<input type="number" id="betAmount" placeholder="Enter Bet Amount">
+<input type="number" id="betAmount" value="100"><br>
 
-<h3>Main Bet</h3>
-<button class="main" onclick="selectBet(this,'dragon')">Dragon 2x</button>
-<button class="tiger" onclick="selectBet(this,'tiger')">Tiger 2x</button>
-<button class="tie" onclick="selectBet(this,'tie')">Tie 8x</button>
-<button class="option" onclick="selectBet(this,'pair')">Pair 12x</button>
-<button class="option" onclick="selectBet(this,'suitedTie')">Suited Tie 50x</button>
+<h4>Main Bet</h4>
+<button class="main-btn" onclick="selectBet('dragon')">Dragon 2x</button>
+<button class="main-btn" onclick="selectBet('tiger')">Tiger 2x</button>
+<button class="main-btn" onclick="selectBet('tie')">Tie 8x</button>
+<button class="main-btn" onclick="selectBet('pair')">Pair 12x</button>
 
-<h3>Dragon Options</h3>
-<button class="option" onclick="selectBet(this,'dragonEven')">Even 2.1</button>
-<button class="option" onclick="selectBet(this,'dragonOdd')">Odd 1.79</button>
-<button class="option" onclick="selectBet(this,'dragonRed')">Red 1.95</button>
-<button class="option" onclick="selectBet(this,'dragonBlack')">Black 1.95</button>
+<h4>Dragon Options</h4>
+<button class="option-btn" onclick="selectBet('dragonEven')">Even 2.1</button>
+<button class="option-btn" onclick="selectBet('dragonOdd')">Odd 1.79</button>
+<button class="option-btn" onclick="selectBet('dragonRed')">Red 1.95</button>
+<button class="option-btn" onclick="selectBet('dragonBlack')">Black 1.95</button>
 
-<h3>Tiger Options</h3>
-<button class="option" onclick="selectBet(this,'tigerEven')">Even 2.1</button>
-<button class="option" onclick="selectBet(this,'tigerOdd')">Odd 1.79</button>
-<button class="option" onclick="selectBet(this,'tigerRed')">Red 1.95</button>
-<button class="option" onclick="selectBet(this,'tigerBlack')">Black 1.95</button>
+<h4>Tiger Options</h4>
+<button class="option-btn" onclick="selectBet('tigerEven')">Even 2.1</button>
+<button class="option-btn" onclick="selectBet('tigerOdd')">Odd 1.79</button>
+<button class="option-btn" onclick="selectBet('tigerRed')">Red 1.95</button>
+<button class="option-btn" onclick="selectBet('tigerBlack')">Black 1.95</button>
 
 <br>
 <button class="play" onclick="playGame()">PLAY</button>
 <button class="reset" onclick="resetGame()">RESET</button>
 <button class="auto" onclick="autoPlay()">AUTO</button>
 
-<h3 id="result"></h3>
-
-<h3>History</h3>
+<div class="result" id="result"></div>
 <div class="history" id="history"></div>
 
 </div>
 
-<audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-<audio id="loseSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-
 <script>
 
-let balance=parseInt(localStorage.getItem("balance"))||1000;
-document.getElementById("balance").innerText=balance;
+let balance=1000;
+let selectedBet="";
+let suits=["♥","♦","♠","♣"];
+let history=[];
 
-let selectedBet=null;
-let historyList=[];
-let autoMode=false;
-
-function selectBet(btn,type){
-document.querySelectorAll("button").forEach(b=>b.classList.remove("activeBet"));
-btn.classList.add("activeBet");
-selectedBet=type;
+function selectBet(bet){
+selectedBet=bet;
 }
 
 function randomCard(){
-let suits=["H","D","C","S"];
-let values=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+let value=Math.floor(Math.random()*13)+1;
 let suit=suits[Math.floor(Math.random()*4)];
-let value=values[Math.floor(Math.random()*13)];
-return{
-value:values.indexOf(value)+1,
-suit:suit,
-color:(suit=="H"||suit=="D")?"red":"black",
-image:"https://deckofcardsapi.com/static/img/"+value+suit+".png"
-};
+return {value:value,suit:suit};
 }
 
 function playGame(){
 
-let bet=parseInt(document.getElementById("betAmount").value);
-if(!selectedBet||!bet||bet<=0){alert("Enter bet & select");return;}
-if(bet>balance){alert("Insufficient balance");return;}
+let bet=parseFloat(document.getElementById("betAmount").value);
+if(!selectedBet || bet<=0 || bet>balance){
+alert("Invalid Bet");
+return;
+}
 
-document.getElementById("dragonCard").classList.remove("flip");
-document.getElementById("tigerCard").classList.remove("flip");
-
-setTimeout(()=>{
+balance-=bet;
 
 let dragon=randomCard();
 let tiger=randomCard();
 
-document.getElementById("dragonCard").src=dragon.image;
-document.getElementById("tigerCard").src=tiger.image;
+document.getElementById("dragonCard").innerHTML=dragon.value+dragon.suit;
+document.getElementById("tigerCard").innerHTML=tiger.value+tiger.suit;
 
-document.getElementById("dragonCard").classList.add("flip");
-document.getElementById("tigerCard").classList.add("flip");
-
-let winner;
+let winner="";
 if(dragon.value>tiger.value) winner="dragon";
 else if(tiger.value>dragon.value) winner="tiger";
 else winner="tie";
 
-historyList.unshift(winner=="dragon"?"D":winner=="tiger"?"T":"S");
-if(historyList.length>12) historyList.pop();
-updateHistory();
-
-let win=false;
-let payout=0;
+let winAmount=0;
 
 /* MAIN BETS */
-if(selectedBet=="dragon"&&winner=="dragon"){win=true;payout=bet*2;}
-if(selectedBet=="tiger"&&winner=="tiger"){win=true;payout=bet*2;}
-if(selectedBet=="tie"&&winner=="tie"){win=true;payout=bet*8;}
-if(selectedBet=="pair"&&dragon.value==tiger.value){win=true;payout=bet*12;}
-if(selectedBet=="suitedTie"&&dragon.value==tiger.value&&dragon.suit==tiger.suit){win=true;payout=bet*50;}
+if(selectedBet=="dragon" && winner=="dragon") winAmount=bet*2;
+if(selectedBet=="tiger" && winner=="tiger") winAmount=bet*2;
+if(selectedBet=="tie" && winner=="tie") winAmount=bet*8;
+if(selectedBet=="pair" && dragon.value==tiger.value) winAmount=bet*12;
 
 /* DRAGON OPTIONS */
-if(selectedBet=="dragonEven"&&winner=="dragon"&&dragon.value%2==0){win=true;payout=bet*2.1;}
-if(selectedBet=="dragonOdd"&&winner=="dragon"&&dragon.value%2==1){win=true;payout=bet*1.79;}
-if(selectedBet=="dragonRed"&&winner=="dragon"&&dragon.color=="red"){win=true;payout=bet*1.95;}
-if(selectedBet=="dragonBlack"&&winner=="dragon"&&dragon.color=="black"){win=true;payout=bet*1.95;}
+if(selectedBet=="dragonEven" && winner=="dragon" && dragon.value%2==0) winAmount=bet*2.1;
+if(selectedBet=="dragonOdd" && winner=="dragon" && dragon.value%2!=0) winAmount=bet*1.79;
+if(selectedBet=="dragonRed" && winner=="dragon" && (dragon.suit=="♥"||dragon.suit=="♦")) winAmount=bet*1.95;
+if(selectedBet=="dragonBlack" && winner=="dragon" && (dragon.suit=="♠"||dragon.suit=="♣")) winAmount=bet*1.95;
 
 /* TIGER OPTIONS */
-if(selectedBet=="tigerEven"&&winner=="tiger"&&tiger.value%2==0){win=true;payout=bet*2.1;}
-if(selectedBet=="tigerOdd"&&winner=="tiger"&&tiger.value%2==1){win=true;payout=bet*1.79;}
-if(selectedBet=="tigerRed"&&winner=="tiger"&&tiger.color=="red"){win=true;payout=bet*1.95;}
-if(selectedBet=="tigerBlack"&&winner=="tiger"&&tiger.color=="black"){win=true;payout=bet*1.95;}
+if(selectedBet=="tigerEven" && winner=="tiger" && tiger.value%2==0) winAmount=bet*2.1;
+if(selectedBet=="tigerOdd" && winner=="tiger" && tiger.value%2!=0) winAmount=bet*1.79;
+if(selectedBet=="tigerRed" && winner=="tiger" && (tiger.suit=="♥"||tiger.suit=="♦")) winAmount=bet*1.95;
+if(selectedBet=="tigerBlack" && winner=="tiger" && (tiger.suit=="♠"||tiger.suit=="♣")) winAmount=bet*1.95;
 
-if(win){
-balance+=payout-bet;
-document.getElementById("result").innerHTML="🎉 WIN ₹"+Math.floor(payout);
-document.getElementById("winSound").play();
-document.body.style.boxShadow="0 0 40px lime";
+if(winAmount>0){
+balance+=winAmount;
+document.getElementById("result").innerHTML="✅ WIN ₹"+winAmount.toFixed(2);
 }else{
-balance-=bet;
 document.getElementById("result").innerHTML="❌ LOSE ₹"+bet;
-document.getElementById("loseSound").play();
-document.body.style.boxShadow="0 0 40px red";
 }
 
-setTimeout(()=>{document.body.style.boxShadow="";},800);
+document.getElementById("balance").innerHTML=balance;
 
-localStorage.setItem("balance",balance);
-document.getElementById("balance").innerText=Math.floor(balance);
-
-selectedBet=null;
-document.querySelectorAll("button").forEach(b=>b.classList.remove("activeBet"));
-
-},700);
+updateHistory(winner);
 }
 
-function updateHistory(){
-let h=document.getElementById("history");
-h.innerHTML="";
-historyList.forEach(r=>{
-let span=document.createElement("span");
-span.classList.add(r);
-span.innerText=r;
-h.appendChild(span);
+function updateHistory(winner){
+history.push(winner.charAt(0).toUpperCase());
+if(history.length>15) history.shift();
+
+let html="";
+history.forEach(h=>{
+html+="<span class='"+h+"'>"+h+"</span>";
 });
+document.getElementById("history").innerHTML=html;
 }
 
 function resetGame(){
 balance=1000;
-localStorage.setItem("balance",balance);
-historyList=[];
-updateHistory();
-document.getElementById("balance").innerText=balance;
-document.getElementById("result").innerText="";
+history=[];
+document.getElementById("balance").innerHTML=balance;
+document.getElementById("dragonCard").innerHTML="?";
+document.getElementById("tigerCard").innerHTML="?";
+document.getElementById("result").innerHTML="";
+document.getElementById("history").innerHTML="";
 }
 
 function autoPlay(){
-autoMode=!autoMode;
-if(autoMode){
-let interval=setInterval(()=>{
-if(!autoMode||balance<=0){clearInterval(interval);autoMode=false;}
-else playGame();
-},2500);
-}
+setInterval(()=>{playGame()},2000);
 }
 
 </script>

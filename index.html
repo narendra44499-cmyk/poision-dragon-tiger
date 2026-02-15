@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Dragon Tiger Pro</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
 margin:0;
@@ -24,13 +22,8 @@ background:#0d2c4f;
 margin-top:5px;
 }
 
-.profit{
-font-size:14px;
-color:lime;
-}
-
 .container{
-width:340px;
+width:360px;
 margin:20px auto;
 background:black;
 padding:20px;
@@ -44,19 +37,34 @@ justify-content:space-around;
 margin-bottom:15px;
 }
 
-.card img{
+.card{
 width:110px;
-border-radius:10px;
-box-shadow:0 0 10px cyan;
-transition:transform .6s;
+height:150px;
+background:white;
+border-radius:12px;
+box-shadow:0 0 15px cyan;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+padding:8px;
+font-weight:bold;
 }
 
-.flip{
-transform:rotateY(360deg);
+.card.red{color:red;}
+.card.black{color:black;}
+
+.card .top{
+font-size:18px;
 }
 
-.glow{
-box-shadow:0 0 25px lime !important;
+.card .center{
+font-size:38px;
+text-align:center;
+}
+
+.card .bottom{
+font-size:18px;
+transform:rotate(180deg);
 }
 
 input{
@@ -74,11 +82,6 @@ border-radius:8px;
 color:white;
 cursor:pointer;
 font-size:13px;
-transition:transform .1s;
-}
-
-button:active{
-transform:scale(0.92);
 }
 
 .red{background:red;}
@@ -115,11 +118,6 @@ font-weight:bold;
 margin-top:10px;
 font-weight:bold;
 }
-
-@media(max-width:400px){
-.container{width:95%;}
-.card img{width:90px;}
-}
 </style>
 </head>
 <body>
@@ -127,21 +125,22 @@ font-weight:bold;
 <div class="header">
 🐉 DRAGON TIGER PRO 🐯
 <div class="balance">Balance: ₹<span id="balance">1000</span></div>
-<div class="profit">Session Profit: ₹<span id="profit">0</span></div>
 </div>
 
 <div class="container">
 
 <div class="cards">
-<div class="card">
+
+<div>
 <div>Dragon</div>
-<img id="dragonCard" src="https://deckofcardsapi.com/static/img/KH.png">
+<div id="dragonCard" class="card red"></div>
 </div>
 
-<div class="card">
+<div>
 <div>Tiger</div>
-<img id="tigerCard" src="https://deckofcardsapi.com/static/img/QS.png">
+<div id="tigerCard" class="card black"></div>
 </div>
+
 </div>
 
 <input type="number" id="betAmount" value="200">
@@ -178,27 +177,22 @@ font-weight:bold;
 
 </div>
 
-<audio id="dealSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-<audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-
 <script>
 let balance=1000;
-let sessionProfit=0;
 let bets=[];
 
-const suits=["H","D","C","S"];
+const suits=["♥","♦","♣","♠"];
+const suitCodes=["H","D","C","S"];
 const values=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
 function updateBalance(){
 document.getElementById("balance").innerText=balance.toFixed(2);
-document.getElementById("profit").innerText=sessionProfit.toFixed(2);
 }
 
 function bet(type){
 let amt=parseFloat(document.getElementById("betAmount").value);
 if(amt>balance){alert("Insufficient balance");return;}
 balance-=amt;
-sessionProfit-=amt;
 bets.push({type:type,amount:amt});
 updateBalance();
 }
@@ -206,32 +200,28 @@ updateBalance();
 function randomCard(){
 let v=Math.floor(Math.random()*13);
 let s=Math.floor(Math.random()*4);
-return {value:values[v],num:v+1,suit:suits[s]};
+return {value:values[v],num:v+1,suit:suits[s],code:suitCodes[s]};
+}
+
+function renderCard(cardObj,elementId){
+let el=document.getElementById(elementId);
+let color=(cardObj.code==="H"||cardObj.code==="D")?"red":"black";
+el.className="card "+color;
+el.innerHTML=`
+<div class="top">${cardObj.value}${cardObj.suit}</div>
+<div class="center">${cardObj.suit}</div>
+<div class="bottom">${cardObj.value}${cardObj.suit}</div>
+`;
 }
 
 function play(){
 if(bets.length===0){alert("Place bet first");return;}
 
-let dragonImg=document.getElementById("dragonCard");
-let tigerImg=document.getElementById("tigerCard");
-
-dragonImg.classList.add("flip");
-tigerImg.classList.add("flip");
-
-document.getElementById("dealSound").play();
-
-setTimeout(()=>{
-
 let d=randomCard();
 let t=randomCard();
 
-dragonImg.src="https://deckofcardsapi.com/static/img/"+d.value+d.suit+".png";
-tigerImg.src="https://deckofcardsapi.com/static/img/"+t.value+t.suit+".png";
-
-dragonImg.classList.remove("flip");
-tigerImg.classList.remove("flip");
-dragonImg.classList.remove("glow");
-tigerImg.classList.remove("glow");
+renderCard(d,"dragonCard");
+renderCard(t,"tigerCard");
 
 let winner="";
 if(d.num>t.num) winner="dragon";
@@ -245,33 +235,26 @@ if(b.type==="dragon" && winner==="dragon") totalWin+=b.amount*2;
 if(b.type==="tiger" && winner==="tiger") totalWin+=b.amount*2;
 if(b.type==="tie" && winner==="tie") totalWin+=b.amount*8;
 if(b.type==="pair" && d.value===t.value) totalWin+=b.amount*12;
-if(b.type==="suited" && winner==="tie" && d.suit===t.suit) totalWin+=b.amount*50;
+if(b.type==="suited" && winner==="tie" && d.code===t.code) totalWin+=b.amount*50;
 
 if(b.type==="d_even" && d.num%2===0) totalWin+=b.amount*2.1;
 if(b.type==="d_odd" && d.num%2!==0) totalWin+=b.amount*1.79;
-if(b.type==="d_red" && (d.suit==="H"||d.suit==="D")) totalWin+=b.amount*1.95;
-if(b.type==="d_black" && (d.suit==="S"||d.suit==="C")) totalWin+=b.amount*1.95;
+if(b.type==="d_red" && (d.code==="H"||d.code==="D")) totalWin+=b.amount*1.95;
+if(b.type==="d_black" && (d.code==="S"||d.code==="C")) totalWin+=b.amount*1.95;
 
 if(b.type==="t_even" && t.num%2===0) totalWin+=b.amount*2.1;
 if(b.type==="t_odd" && t.num%2!==0) totalWin+=b.amount*1.79;
-if(b.type==="t_red" && (t.suit==="H"||t.suit==="D")) totalWin+=b.amount*1.95;
-if(b.type==="t_black" && (t.suit==="S"||t.suit==="C")) totalWin+=b.amount*1.95;
+if(b.type==="t_red" && (t.code==="H"||t.code==="D")) totalWin+=b.amount*1.95;
+if(b.type==="t_black" && (t.code==="S"||t.code==="C")) totalWin+=b.amount*1.95;
 
 if(winner==="tie" && (b.type==="dragon"||b.type==="tiger")) totalWin+=b.amount;
 });
 
-if(winner==="dragon") dragonImg.classList.add("glow");
-if(winner==="tiger") tigerImg.classList.add("glow");
-
-if(totalWin>0){
-document.getElementById("winSound").play();
-sessionProfit+=totalWin;
-}
-
 balance+=totalWin;
 updateBalance();
 
-document.getElementById("result").innerText= totalWin>0 ? "🎉 WIN ₹"+totalWin.toFixed(2) : "No Win";
+document.getElementById("result").innerText=
+ totalWin>0 ? "🎉 WIN ₹"+totalWin.toFixed(2) : "No Win";
 
 let h=document.getElementById("history");
 let c=document.createElement("div");
@@ -283,12 +266,10 @@ h.prepend(c);
 if(h.children.length>12)h.removeChild(h.lastChild);
 
 bets=[];
-
-},600);
 }
 
 updateBalance();
 </script>
 
 </body>
-  </html>
+</html>
